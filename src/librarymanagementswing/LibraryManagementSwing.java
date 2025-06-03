@@ -24,6 +24,7 @@ public class LibraryManagementSwing {
     private static final Color BACKGROUND_COLOR = new Color(240, 240, 240);
     private static final Color TEXT_COLOR = Color.BLACK;
     private static final Color PRIMARY_COLOR = new Color(0, 102, 204);
+    private static final Color BUTTON_COLOR = new Color(0, 102, 204);
 
     public LibraryManagementSwing() {
         try {
@@ -317,9 +318,9 @@ public class LibraryManagementSwing {
             new Object[]{"Book ID", "Title", "Author", "ISBN", "Category", "Available", "Status"}, 0));
         table.setBackground(Color.WHITE);
         table.setForeground(TEXT_COLOR);
-        table.setFont(new Font("Arial", Font.PLAIN, 12));
-        table.setRowHeight(25);
-        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(30);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         table.getTableHeader().setBackground(PRIMARY_COLOR);
         table.getTableHeader().setForeground(Color.WHITE);
         
@@ -423,9 +424,9 @@ public class LibraryManagementSwing {
             new Object[]{"Book ID", "Title", "Author", "ISBN", "Category", "Available", "Status"}, 0));
         table.setBackground(Color.WHITE);
         table.setForeground(TEXT_COLOR);
-        table.setFont(new Font("Arial", Font.PLAIN, 12));
-        table.setRowHeight(25);
-        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(30);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         table.getTableHeader().setBackground(PRIMARY_COLOR);
         table.getTableHeader().setForeground(Color.WHITE);
         
@@ -510,19 +511,22 @@ public class LibraryManagementSwing {
 
     private void styleLabel(JLabel label) {
         label.setForeground(TEXT_COLOR);
-        label.setFont(new Font("Arial", Font.PLAIN, 12));
+        label.setFont(new Font("Arial", Font.BOLD, 14));
     }
 
     private void styleTextField(JTextField textField) {
-        textField.setForeground(TEXT_COLOR);
         textField.setBackground(Color.WHITE);
-        textField.setFont(new Font("Arial", Font.PLAIN, 12));
+        textField.setForeground(TEXT_COLOR);
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
     }
 
     private void styleButton(JButton button) {
-        button.setForeground(TEXT_COLOR);
-        button.setBackground(PRIMARY_COLOR);
-        button.setFont(new Font("Arial", Font.PLAIN, 12));
+        button.setBackground(BUTTON_COLOR);
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     public static void main(String[] args) {
