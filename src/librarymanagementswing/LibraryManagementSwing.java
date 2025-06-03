@@ -21,6 +21,9 @@ public class LibraryManagementSwing {
     private UserAuth userAuth;
     private JFrame mainFrame;
     private JTabbedPane tabbedPane;
+    private static final Color BACKGROUND_COLOR = new Color(240, 240, 240);
+    private static final Color TEXT_COLOR = Color.BLACK;
+    private static final Color PRIMARY_COLOR = new Color(0, 102, 204);
 
     public LibraryManagementSwing() {
         try {
@@ -148,6 +151,8 @@ public class LibraryManagementSwing {
     private JPanel createIssueBookPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 2, 10, 10));
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JLabel bookIdLabel = new JLabel("Book ID:");
         JTextField bookIdField = new JTextField();
@@ -156,6 +161,21 @@ public class LibraryManagementSwing {
         JLabel daysLabel = new JLabel("Days to Return:");
         JSpinner daysSpinner = new JSpinner(new SpinnerNumberModel(14, 1, 30, 1));
         JButton issueButton = new JButton("Issue Book");
+
+        // Style components
+        styleLabel(bookIdLabel);
+        styleLabel(studentLabel);
+        styleLabel(daysLabel);
+        styleTextField(bookIdField);
+        styleTextField(studentField);
+        daysSpinner.setBackground(Color.WHITE);
+        daysSpinner.setForeground(TEXT_COLOR);
+        styleButton(issueButton);
+
+        // Add tooltips for better UX
+        bookIdField.setToolTipText("Enter the ID of the book to be issued");
+        studentField.setToolTipText("Enter the student's full name");
+        daysSpinner.setToolTipText("Select number of days before return (1-30)");
 
         panel.add(bookIdLabel);
         panel.add(bookIdField);
@@ -216,10 +236,20 @@ public class LibraryManagementSwing {
     private JPanel createReturnBookPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2, 10, 10));
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JLabel bookIdLabel = new JLabel("Book ID:");
         JTextField bookIdField = new JTextField();
         JButton returnButton = new JButton("Return Book");
+
+        // Style components
+        styleLabel(bookIdLabel);
+        styleTextField(bookIdField);
+        styleButton(returnButton);
+
+        // Add tooltip
+        bookIdField.setToolTipText("Enter the ID of the book being returned");
 
         panel.add(bookIdLabel);
         panel.add(bookIdField);
@@ -274,12 +304,64 @@ public class LibraryManagementSwing {
 
     private JPanel createViewBooksPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JButton refreshButton = new JButton("Refresh");
+        styleButton(refreshButton);
+        refreshButton.setIcon(new ImageIcon("src/resources/refresh.png")); // Add refresh icon if available
+
+        // Create and style the table
         JTable table = new JTable(new DefaultTableModel(
             new Object[]{"Book ID", "Title", "Author", "ISBN", "Category", "Available", "Status"}, 0));
+        table.setBackground(Color.WHITE);
+        table.setForeground(TEXT_COLOR);
+        table.setFont(new Font("Arial", Font.PLAIN, 12));
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.getTableHeader().setBackground(PRIMARY_COLOR);
+        table.getTableHeader().setForeground(Color.WHITE);
+        
+        // Enable sorting
+        table.setAutoCreateRowSorter(true);
+        
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBackground(BACKGROUND_COLOR);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        // Add a search filter panel
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        filterPanel.setBackground(BACKGROUND_COLOR);
+        JTextField filterField = new JTextField(20);
+        styleTextField(filterField);
+        filterField.setToolTipText("Type to filter the table");
+        
+        // Add real-time filtering
+        filterField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            
+            private void filter() {
+                String filterText = filterField.getText().toLowerCase();
+                javax.swing.table.TableRowSorter<DefaultTableModel> sorter = 
+                    new javax.swing.table.TableRowSorter<>((DefaultTableModel) table.getModel());
+                table.setRowSorter(sorter);
+                sorter.setRowFilter(javax.swing.RowFilter.regexFilter(filterText));
+            }
+        });
+
+        filterPanel.add(new JLabel("Filter:"));
+        filterPanel.add(filterField);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(BACKGROUND_COLOR);
+        topPanel.add(refreshButton, BorderLayout.EAST);
+        topPanel.add(filterPanel, BorderLayout.WEST);
+
+        panel.add(topPanel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         refreshButton.addActionListener(e -> {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -310,23 +392,68 @@ public class LibraryManagementSwing {
             }
         });
 
-        panel.add(refreshButton, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
         return panel;
     }
 
     private JPanel createSearchPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel searchPanel = new JPanel(new FlowLayout());
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.setBackground(BACKGROUND_COLOR);
+        
         JTextField searchField = new JTextField(20);
         JComboBox<String> searchType = new JComboBox<>(new String[]{"Title", "Author", "ISBN", "Category"});
         JButton searchButton = new JButton("Search");
+        
+        // Style components
+        styleTextField(searchField);
+        searchType.setBackground(Color.WHITE);
+        searchType.setForeground(TEXT_COLOR);
+        styleButton(searchButton);
+        
+        // Add tooltips
+        searchField.setToolTipText("Enter search term");
+        searchType.setToolTipText("Select search criteria");
+        
+        // Create and style the table
         JTable table = new JTable(new DefaultTableModel(
             new Object[]{"Book ID", "Title", "Author", "ISBN", "Category", "Available", "Status"}, 0));
+        table.setBackground(Color.WHITE);
+        table.setForeground(TEXT_COLOR);
+        table.setFont(new Font("Arial", Font.PLAIN, 12));
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.getTableHeader().setBackground(PRIMARY_COLOR);
+        table.getTableHeader().setForeground(Color.WHITE);
+        
+        // Enable sorting
+        table.setAutoCreateRowSorter(true);
+        
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBackground(BACKGROUND_COLOR);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        // Add search button icon and enter key support
+        searchButton.setIcon(new ImageIcon("src/resources/search.png")); // Add search icon if available
+        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    searchButton.doClick();
+                }
+            }
+        });
+
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(new JLabel("By:"));
+        searchPanel.add(searchType);
+        searchPanel.add(searchButton);
+
+        panel.add(searchPanel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         searchButton.addActionListener(e -> {
             String searchText = searchField.getText();
@@ -378,16 +505,24 @@ public class LibraryManagementSwing {
             }
         });
 
-        searchPanel.add(new JLabel("Search:"));
-        searchPanel.add(searchField);
-        searchPanel.add(new JLabel("By:"));
-        searchPanel.add(searchType);
-        searchPanel.add(searchButton);
-
-        panel.add(searchPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
         return panel;
+    }
+
+    private void styleLabel(JLabel label) {
+        label.setForeground(TEXT_COLOR);
+        label.setFont(new Font("Arial", Font.PLAIN, 12));
+    }
+
+    private void styleTextField(JTextField textField) {
+        textField.setForeground(TEXT_COLOR);
+        textField.setBackground(Color.WHITE);
+        textField.setFont(new Font("Arial", Font.PLAIN, 12));
+    }
+
+    private void styleButton(JButton button) {
+        button.setForeground(TEXT_COLOR);
+        button.setBackground(PRIMARY_COLOR);
+        button.setFont(new Font("Arial", Font.PLAIN, 12));
     }
 
     public static void main(String[] args) {
